@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter/services.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({Key key}) : super(key: key);
@@ -8,9 +9,9 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   // Variables + Functions
-  int counter = 0;
+  int scoreCounter = 0;
   int answersIndex = 0;
   List<String> answers = ["Your Answer ? ", "Right Answer", "Wrong Answer"];
 
@@ -23,10 +24,40 @@ class _GamePageState extends State<GamePage> {
   }
 
   void reset() {
-    counter = 0;
+    scoreCounter = 0;
     answersIndex = 0;
     right = 1;
     left = 1;
+  }
+
+  //TODO:Add Timer
+
+  //Countdown() = "00" ;
+
+  int _counter = 0;
+  AnimationController _controller;
+  int levelClock = 60;
+
+  //Level Of Clock
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+        vsync: this,
+        duration: Duration(
+            seconds:
+                levelClock) // gameData.levelClock is a user entered number elsewhere in the applciation
+        );
+
+    _controller.forward();
   }
 
   @override
@@ -64,7 +95,7 @@ class _GamePageState extends State<GamePage> {
             flex: 2,
             child: Center(
               child: Text(
-                "Score : $counter",
+                "Score : $scoreCounter",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -77,14 +108,11 @@ class _GamePageState extends State<GamePage> {
           Expanded(
             flex: 2,
             child: Center(
-              child: Text(
-                answers[answersIndex],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontFamily: "Pacifico",
-                ),
+              child: Countdown(
+                animation: StepTween(
+                  begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                  end: 0,
+                ).animate(_controller),
               ),
             ),
           ),
@@ -128,20 +156,18 @@ class _GamePageState extends State<GamePage> {
                         ),
                       ),
                       color: Colors.red,
-                        onPressed: () {
-                          setState(() {
-                            if(right != left){
-                              counter++ ;
-                              answersIndex = 1 ;
-                            }
-                            else {
-                              counter = 0 ;
-                              answersIndex = 2 ;
-
-                            }
-                            change() ;
-                          });
-                        },
+                      onPressed: () {
+                        setState(() {
+                          if (right != left) {
+                            scoreCounter++;
+                            answersIndex = 1;
+                          } else {
+                            scoreCounter = 0;
+                            answersIndex = 2;
+                          }
+                          change();
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -161,16 +187,14 @@ class _GamePageState extends State<GamePage> {
                       color: Colors.green,
                       onPressed: () {
                         setState(() {
-                          if(right == left){
-                            counter++ ;
-                            answersIndex = 1 ;
+                          if (right == left) {
+                            scoreCounter++;
+                            answersIndex = 1;
+                          } else {
+                            scoreCounter = 0;
+                            answersIndex = 2;
                           }
-                          else {
-                            counter = 0 ;
-                            answersIndex = 2 ;
-
-                          }
-                          change() ;
+                          change();
                         });
                       },
                     ),
@@ -180,6 +204,33 @@ class _GamePageState extends State<GamePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class Countdown extends AnimatedWidget {
+  Countdown({Key key, this.animation}) : super(key: key, listenable: animation);
+  Animation<int> animation;
+
+  @override
+  build(BuildContext context) {
+    Duration clockTimer = Duration(seconds: animation.value);
+
+    String timerText =
+        '${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+
+    print(timerText);
+    if (timerText == "00") {
+      timerText = "Done";
+    }
+
+    return Text(
+      "$timerText",
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 60,
+        fontFamily: "Pacifico",
       ),
     );
   }
