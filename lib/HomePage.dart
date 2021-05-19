@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'GamePage.dart';
+import 'dart:math';
+
+
+int randomNumber = Random().nextInt(9) + 1 ;
+
+
 
 class HomePage extends StatelessWidget {
   const HomePage({Key key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +104,9 @@ class HomePage extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(22.0),
-              child: Image.asset('images/image-1.png'),
+
+              //TODO:Random Pic
+              child: Image.asset('images/image-$randomNumber.png'),
             ),
           ),
         ],

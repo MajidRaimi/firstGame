@@ -17,18 +17,16 @@ class _GamePageState extends State<GamePage> {
   int right = 1;
   int left = 1;
 
-
-  void change(){
-    right = Random().nextInt(9) + 1 ;
-    left = Random().nextInt(9) + 1 ;
+  void change() {
+    right = Random().nextInt(9) + 1;
+    left = Random().nextInt(9) + 1;
   }
 
-
-  void reset(){
-    counter = 0 ;
-    answersIndex = 0 ;
-    right = 1 ;
-    left = 1 ;
+  void reset() {
+    counter = 0;
+    answersIndex = 0;
+    right = 1;
+    left = 1;
   }
 
   @override
@@ -44,7 +42,7 @@ class _GamePageState extends State<GamePage> {
               icon: Icon(Icons.repeat),
               onPressed: () {
                 setState(() {
-                  reset() ;
+                  reset();
                 });
               })
         ],
@@ -111,79 +109,70 @@ class _GamePageState extends State<GamePage> {
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: 4,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        if (left != right){
-                          counter++ ;
-                          answersIndex = 1 ;
-                        } else {
-                          counter = 0 ;
-                          answersIndex = 2 ;
-                        }
-                        change() ;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70),
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            "False",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Pacifico",
-                              fontSize: 30,
-                            ),
-                          ),
-                        ),
-                        //TODO:
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.all(Radius.circular(15))
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 50, horizontal: 15),
+                    child: FlatButton(
+                      child: Text(
+                        "False",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Pacifico",
+                          fontSize: 25,
                         ),
                       ),
+                      color: Colors.red,
+                        onPressed: () {
+                          setState(() {
+                            if(right != left){
+                              counter++ ;
+                              answersIndex = 1 ;
+                            }
+                            else {
+                              counter = 0 ;
+                              answersIndex = 2 ;
+
+                            }
+                            change() ;
+                          });
+                        },
                     ),
                   ),
                 ),
                 Expanded(
-                  child: FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        if (left == right){
-                          counter++ ;
-                          answersIndex = 1 ;
-                        } else {
-                          counter = 0 ;
-                          answersIndex = 2 ;
-                        }
-                        change() ;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 70),
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            "True",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Pacifico",
-                              fontSize: 30,
-                            ),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            color: Colors.green,
-                          borderRadius: BorderRadius.all(Radius.circular(15))
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 50, horizontal: 15),
+                    child: FlatButton(
+                      child: Text(
+                        "True",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Pacifico",
+                          fontSize: 25,
                         ),
                       ),
+                      color: Colors.green,
+                      onPressed: () {
+                        setState(() {
+                          if(right == left){
+                            counter++ ;
+                            answersIndex = 1 ;
+                          }
+                          else {
+                            counter = 0 ;
+                            answersIndex = 2 ;
+
+                          }
+                          change() ;
+                        });
+                      },
                     ),
                   ),
                 ),
