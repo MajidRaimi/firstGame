@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -18,47 +20,52 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   int right = 1;
   int left = 1;
 
+  bool startTimerBool = false ;
+
+
   void change() {
     right = Random().nextInt(9) + 1;
     left = Random().nextInt(9) + 1;
   }
+
+  int _counter = 60;
+  Timer _timer;
+
 
   void reset() {
     scoreCounter = 0;
     answersIndex = 0;
     right = 1;
     left = 1;
+    startTimerBool = false ;
+    _counter = 60 ;
   }
 
   //TODO:Add Timer
 
-  //Countdown() = "00" ;
 
-  int _counter = 0;
-  AnimationController _controller;
-  int levelClock = 60;
+  void _startTimer() {
+    print("Working One");
 
-  //Level Of Clock
+    if(startTimerBool){
+      _counter = 60;
+      _timer = Timer.periodic(
+        Duration(seconds: 1),
+            (timer) {
+          setState(() {
+            if (_counter > 0) {
+              _counter--;
+            } else {
+              _timer.cancel();
+            }
+          });
+        },
+      );
+    }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
 
-    _controller = AnimationController(
-        vsync: this,
-        duration: Duration(
-            seconds:
-                levelClock) // gameData.levelClock is a user entered number elsewhere in the applciation
-        );
-
-    _controller.forward();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +80,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               icon: Icon(Icons.repeat),
               onPressed: () {
                 setState(() {
+
+
+            //      startTimerBool = false ;
                   reset();
+                  _timer.cancel() ;
                 });
               })
         ],
@@ -108,11 +119,14 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           Expanded(
             flex: 2,
             child: Center(
-              child: Countdown(
-                animation: StepTween(
-                  begin: levelClock, // THIS IS A USER ENTERED NUMBER
-                  end: 0,
-                ).animate(_controller),
+              //TODO: Add timer here
+              child: Text(
+                _counter.toString(),
+                style: TextStyle(
+                  fontSize: 50,
+                  fontFamily: "Pacifico",
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -146,6 +160,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 50, horizontal: 15),
+                    // ignore: deprecated_member_use
                     child: FlatButton(
                       child: Text(
                         "False",
@@ -158,6 +173,14 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       color: Colors.red,
                       onPressed: () {
                         setState(() {
+
+                          if(!startTimerBool){
+                            startTimerBool = true ;
+                            _startTimer() ;
+                          }
+
+
+
                           if (right != left) {
                             scoreCounter++;
                             answersIndex = 1;
@@ -165,6 +188,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                             scoreCounter = 0;
                             answersIndex = 2;
                           }
+
                           change();
                         });
                       },
@@ -175,6 +199,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 50, horizontal: 15),
+                    // ignore: deprecated_member_use
                     child: FlatButton(
                       child: Text(
                         "True",
@@ -187,6 +212,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       color: Colors.green,
                       onPressed: () {
                         setState(() {
+                          if(!startTimerBool){
+                            startTimerBool = true ;
+                            _startTimer() ;
+                          }
+
                           if (right == left) {
                             scoreCounter++;
                             answersIndex = 1;
@@ -194,6 +224,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                             scoreCounter = 0;
                             answersIndex = 2;
                           }
+
                           change();
                         });
                       },
@@ -231,6 +262,7 @@ class Countdown extends AnimatedWidget {
         color: Colors.white,
         fontSize: 60,
         fontFamily: "Pacifico",
+        //aaaaaa
       ),
     );
   }
