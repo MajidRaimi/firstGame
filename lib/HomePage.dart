@@ -2,26 +2,20 @@ import 'package:flutter/material.dart';
 import 'GamePage.dart';
 import 'dart:math';
 
-
-int randomNumber = Random().nextInt(9) + 1 ;
-
-
+int randomNumber = Random().nextInt(9) + 1;
 
 class HomePage extends StatelessWidget {
   const HomePage({Key key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.indigo,
       appBar: AppBar(
-        leading: Icon(Icons.settings , color: Colors.indigo,),
 
         elevation: 0,
         backgroundColor: Colors.white,
       ),
-
       body: Column(
         children: [
           Stack(
@@ -58,8 +52,8 @@ class HomePage extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 160.0),
-                      child: FlatButton(
-                        onPressed: () {
+                      child: GestureDetector(
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -73,7 +67,11 @@ class HomePage extends StatelessWidget {
                           child: Center(
                             child: Text(
                               "Start The Game",
-                              style: TextStyle(color: Colors.white , fontFamily: "Pacifico" , fontSize: 20),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Pacifico",
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                           width: 300,

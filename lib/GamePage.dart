@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:flutter/services.dart';
+import 'scorePage.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({Key key}) : super(key: key);
@@ -20,8 +20,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   int right = 1;
   int left = 1;
 
-  bool startTimerBool = false ;
-
+  bool startTimerBool = false;
 
   void change() {
     right = Random().nextInt(9) + 1;
@@ -31,41 +30,60 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   int _counter = 60;
   Timer _timer;
 
-
   void reset() {
     scoreCounter = 0;
     answersIndex = 0;
     right = 1;
     left = 1;
-    startTimerBool = false ;
-    _counter = 60 ;
+    startTimerBool = false;
+    _counter = 60;
+    maxPoint = 0;
   }
+
+  //TODO: Max Point
+
+  int maxPoint = 0;
 
   //TODO:Add Timer
 
-
   void _startTimer() {
-    print("Working One");
-
-    if(startTimerBool){
+    if (startTimerBool) {
       _counter = 60;
       _timer = Timer.periodic(
         Duration(seconds: 1),
-            (timer) {
-          setState(() {
-            if (_counter > 0) {
-              _counter--;
-            } else {
-              _timer.cancel();
-            }
-          });
+        (timer) {
+          setState(
+            () {
+              if (_counter > 0) {
+                _counter--;
+              } else {
+                _timer.cancel();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ScorePage(
+                        maxScore: maxPoint,
+                        reset: reset,
+                      );
+                    },
+                  ),
+                );
+
+                setState(() {
+
+
+                }
+
+                );
+             //   reset() ;
+              }
+            },
+          );
         },
       );
     }
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +98,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               icon: Icon(Icons.repeat),
               onPressed: () {
                 setState(() {
-
-
-            //      startTimerBool = false ;
+                  //      startTimerBool = false ;
                   reset();
-                  _timer.cancel() ;
+                  _timer.cancel();
                 });
               })
         ],
@@ -173,13 +189,10 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       color: Colors.red,
                       onPressed: () {
                         setState(() {
-
-                          if(!startTimerBool){
-                            startTimerBool = true ;
-                            _startTimer() ;
+                          if (!startTimerBool) {
+                            startTimerBool = true;
+                            _startTimer();
                           }
-
-
 
                           if (right != left) {
                             scoreCounter++;
@@ -188,6 +201,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                             scoreCounter = 0;
                             answersIndex = 2;
                           }
+
+                          if (scoreCounter > maxPoint) {
+                            maxPoint = scoreCounter;
+                          }
+
+                      //    print("The Max Point Is $maxPoint");
 
                           change();
                         });
@@ -212,9 +231,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       color: Colors.green,
                       onPressed: () {
                         setState(() {
-                          if(!startTimerBool){
-                            startTimerBool = true ;
-                            _startTimer() ;
+                          if (!startTimerBool) {
+                            startTimerBool = true;
+                            _startTimer();
                           }
 
                           if (right == left) {
@@ -224,6 +243,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                             scoreCounter = 0;
                             answersIndex = 2;
                           }
+
+                          if (scoreCounter > maxPoint) {
+                            maxPoint = scoreCounter;
+                          }
+                        //  print("The Max Point Is $maxPoint");
 
                           change();
                         });
@@ -235,34 +259,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class Countdown extends AnimatedWidget {
-  Countdown({Key key, this.animation}) : super(key: key, listenable: animation);
-  Animation<int> animation;
-
-  @override
-  build(BuildContext context) {
-    Duration clockTimer = Duration(seconds: animation.value);
-
-    String timerText =
-        '${clockTimer.inSeconds.remainder(60).toString().padLeft(2, '0')}';
-
-    print(timerText);
-    if (timerText == "00") {
-      timerText = "Done";
-    }
-
-    return Text(
-      "$timerText",
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 60,
-        fontFamily: "Pacifico",
-        //aaaaaa
       ),
     );
   }
